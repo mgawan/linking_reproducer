@@ -1,0 +1,13 @@
+cmake_minimum_required(VERSION 3.20)
+
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+project(vec_add LANGUAGES CXX HIP)
+find_package(hip REQUIRED)
+set(CMAKE_HIP_FLAGS "-fgpu-rdc --hip-link")
+# enable_language(HIP)
+set(SOURCE_FILES dev_func.cpp kernel.cpp)
+add_library(vec_lib OBJECT ${SOURCE_FILES})
+set_source_files_properties(${SOURCE_FILES} PROPERTIES LANGUAGE HIP)
+add_library(vec_lib_static STATIC $<TARGET_OBJECTS:vec_lib>)
+add_executable(vec_add vectorAdd.cpp)
+target_link_libraries(vec_add vec_lib_static)
